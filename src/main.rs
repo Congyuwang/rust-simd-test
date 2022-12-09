@@ -1,6 +1,6 @@
 #![feature(portable_simd)]
 
-use std::simd::{f32x4, SimdFloat};
+use std::simd::{f32x16, SimdFloat};
 use std::time::Instant;
 
 const VEC_LEN: usize = 10000000;
@@ -55,13 +55,13 @@ fn for_loop_sum(vec: &[f32]) -> f32 {
 /// simd sum
 fn simd_sum(vec: &[f32]) -> f32 {
     let mut s = 0.0f32;
-    let (slow0, simd, slow1) = vec.as_simd::<4>();
+    let (slow0, simd, slow1) = vec.as_simd::<16>();
     for i in slow0 {
         s += i;
     }
-    let mut simd0 = f32x4::splat(0.0);
-    for ix4 in simd {
-        simd0 += ix4;
+    let mut simd0 = f32x16::splat(0.0);
+    for ix16 in simd {
+        simd0 += ix16;
     }
     s += simd0.reduce_sum();
     for i in slow1 {
