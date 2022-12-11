@@ -9,7 +9,7 @@ const VEC_LEN: usize = 10000000;
 const TEST_ROUND: usize = 1000;
 const LANE: usize = 16;
 
-fn main() {
+pub fn main() {
     let vec_store = vec![1.0f32; VEC_LEN];
     let mut vec_store_2 = vec![1.0f32; VEC_LEN];
     let vec = vec_store.as_slice();
@@ -67,6 +67,7 @@ fn main() {
     }
     let t_end = Instant::now();
 
+    println!("Bad idea, leave this to _memcopy intrinsic");
     println!("simd copy:   {}ms", (t_end - t_start).as_millis());
     t_start = t_end;
 
@@ -76,6 +77,7 @@ fn main() {
     }
     let t_end = Instant::now();
 
+    println!("the compiler already uses SIMD for this:");
     println!("iter neg:    {}ms", (t_end - t_start).as_millis());
     t_start = t_end;
 
@@ -103,6 +105,7 @@ fn main() {
     }
     let t_end = Instant::now();
 
+    println!("the compiler already uses SIMD for this:");
     println!("iter sub:    {}ms", (t_end - t_start).as_millis());
     t_start = t_end;
 
@@ -130,6 +133,7 @@ fn main() {
     }
     let t_end = Instant::now();
 
+    println!("this compiler is already doing SIMD for this");
     println!("iter axpby:  {}ms", (t_end - t_start).as_millis());
     t_start = t_end;
 
@@ -213,6 +217,7 @@ fn slice_copy(vec: &[f32], vec2: &mut [f32]) {
 }
 
 /// for loop sum
+/// Bad idea: just use memcpy!
 fn simd_copy(vec: &[f32], vec2: &mut [f32]) {
     if vec.len() != vec2.len() {
         panic!("err, unequal length");
